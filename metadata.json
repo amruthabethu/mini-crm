@@ -1,0 +1,6 @@
+{
+  "name": "Client Lead Management System",
+  "description": "A full-stack, professional Client Lead Management System (Mini CRM) with dashboards, JWT auth, lead tracking, and automated email alerts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
