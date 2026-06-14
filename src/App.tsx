@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { ToastProvider, useToast } from "./context/ToastContext";
-import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import LeadsPage from "./pages/LeadsPage";
 import AddLeadPage from "./pages/AddLeadPage";
@@ -14,20 +13,16 @@ import {
   Users,
   UserPlus,
   Settings,
-  LogOut,
   Sun,
   Moon,
   Menu,
   X,
-  User,
-  KeyRound,
-  ChevronRight
+  KeyRound
 } from "lucide-react";
 
 function CRMAppContent() {
-  const { isAuthenticated, loading, user, logout } = useAuth();
+  const { isAuthenticated, loading, user } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  const { toast } = useToast();
 
   const [activePage, setActivePage] = useState<string>("dashboard");
   const [navigationExtra, setNavigationExtra] = useState<any>(null);
@@ -37,13 +32,6 @@ function CRMAppContent() {
     setActivePage(page);
     setNavigationExtra(extra || null);
     setMobileMenuOpen(false); // Close mobile drawer
-  };
-
-  const handleLogout = () => {
-    if (confirm("Verify access termination: Are you sure you want to log out?")) {
-      logout();
-      toast("Session terminated. Sign-in required to return.", "info");
-    }
   };
 
   // Full-screen Boot Spinner
@@ -61,11 +49,6 @@ function CRMAppContent() {
         </div>
       </div>
     );
-  }
-
-  // Route Unauthenticated admins strait to login
-  if (!isAuthenticated) {
-    return <LoginPage />;
   }
 
   // Route Active Page Switching
@@ -162,29 +145,20 @@ function CRMAppContent() {
             </div>
           </div>
 
-          {/* Theme & Logout Buttons Row */}
-          <div className="grid grid-cols-2 gap-2 pt-1">
+          {/* Theme Toggle Button w-full */}
+          <div className="pt-1">
             
-            {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
-              className="py-2 bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700/80 rounded-md text-slate-600 dark:text-slate-300 flex items-center justify-center cursor-pointer transition-colors"
+              className="w-full py-2 bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700/80 rounded-md text-slate-600 dark:text-slate-350 flex items-center justify-center cursor-pointer transition-colors"
               title="Toggle application look"
             >
               {theme === "light" ? (
-                <Moon className="w-4 h-4" />
+                <Moon className="w-4 h-4 mr-2" />
               ) : (
-                <Sun className="w-4 h-4 text-amber-400" />
+                <Sun className="w-4 h-4 text-amber-400 mr-2" />
               )}
-            </button>
-
-            {/* Logout Trigger */}
-            <button
-              onClick={handleLogout}
-              className="py-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/20 dark:hover:bg-rose-950/30 text-rose-600 dark:text-rose-450 rounded-md flex items-center justify-center cursor-pointer transition-all active:scale-[0.98]"
-              title="Terminate Admin login"
-            >
-              <LogOut className="w-4 h-4" />
+              <span className="text-xs font-semibold">Toggle Theme</span>
             </button>
 
           </div>
@@ -266,14 +240,6 @@ function CRMAppContent() {
                     {user?.email}
                   </span>
                 </div>
-                
-                <button
-                  onClick={handleLogout}
-                  className="p-2 px-3 rounded-lg bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-450 flex items-center justify-center text-xs font-bold gap-1 cursor-pointer transition-all active:scale-95"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span>Log Out</span>
-                </button>
               </div>
             </motion.div>
           )}

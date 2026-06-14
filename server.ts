@@ -2,7 +2,7 @@ import express from "express";
 import path from "path";
 import dotenv from "dotenv";
 import { createServer as createViteServer } from "vite";
-import { connectDB } from "./server/config/db";
+import { connectDB, DB } from "./server/config/db";
 import authRoutes from "./server/routes/authRoutes";
 import leadRoutes from "./server/routes/leadRoutes";
 
@@ -19,6 +19,15 @@ async function startServer() {
   // 1. Configure standard server handlers (JSON body parses, etc.)
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
+  // Diagnostics health status endpoint
+  app.get("/api/health", (req, res) => {
+    res.json({
+      status: "healthy",
+      database: DB.isMongoDB() ? "MongoDB" : "Local JSON File",
+      timestamp: new Date().toISOString()
+    });
+  });
 
   // 2. Bind backend API business controllers
   app.use("/api/auth", authRoutes);

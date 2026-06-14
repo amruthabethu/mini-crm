@@ -13,67 +13,41 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const DEFAULT_ADMIN: IUser = {
+  id: "admin-default-id",
+  name: "System Admin",
+  email: "admin@crm.com",
+  createdAt: new Date().toISOString()
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem("crm-token"));
-  const [user, setUser] = useState<IUser | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [token, setToken] = useState<string | null>("bypass-token");
+  const [user, setUser] = useState<IUser | null>(DEFAULT_ADMIN);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    async function verifyToken() {
-      const savedToken = localStorage.getItem("crm-token");
-      if (!savedToken) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await fetch("/api/auth/me", {
-          headers: {
-            Authorization: `Bearer ${savedToken}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data.user);
-          setToken(savedToken);
-        } else {
-          // Token expired or invalid, purge immediately
-          localStorage.removeItem("crm-token");
-          setToken(null);
-          setUser(null);
-        }
-      } catch (err) {
-        console.error("Failed to authenticate session token:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    verifyToken();
+    // Instantly bypassed authentication
+    setLoading(false);
   }, []);
 
   const loginUser = (newToken: string, userData: IUser) => {
-    localStorage.setItem("crm-token", newToken);
-    setToken(newToken);
-    setUser(userData);
+    setToken("bypass-token");
+    setUser(DEFAULT_ADMIN);
   };
 
   const logoutUser = () => {
-    localStorage.removeItem("crm-token");
-    setToken(null);
-    setUser(null);
+    // Remain permanently authenticated since login is removed
+    console.log("Logout action bypassed because login is disabled.");
   };
 
   const getAuthHeaders = (): Record<string, string> => {
-    if (!token) return {};
     return {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer bypass-token`,
       "Content-Type": "application/json",
     };
   };
 
-  const isAuthenticated = !!token && !!user;
+  const isAuthenticated = true;
 
   return (
     <AuthContext.Provider

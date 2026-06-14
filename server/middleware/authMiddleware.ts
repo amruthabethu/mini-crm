@@ -12,19 +12,11 @@ export interface AuthenticatedRequest extends Request {
 }
 
 export function authMiddleware(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "Access denied. Missing or malformed authorization header." });
-  }
-
-  const token = authHeader.split(" ")[1];
-
-  try {
-    const verified = jwt.verify(token, JWT_SECRET) as { id: string; email: string; name: string };
-    req.user = verified;
-    next();
-  } catch (error) {
-    return res.status(401).json({ error: "Access denied. Invalid or expired authentication token." });
-  }
+  // Completely bypass auth check
+  req.user = {
+    id: "admin-default-id",
+    email: "admin@crm.com",
+    name: "System Admin"
+  };
+  next();
 }

@@ -80,15 +80,36 @@ const UserSchema = new mongoose.Schema({
 const MongoUser = (mongoose.models.User || mongoose.model("User", UserSchema)) as any;
 
 export async function connectDB() {
-  const uri = process.env.MONGODB_URI;
-  if (!uri) {
-    console.log("⚠️ No MONGODB_URI environment variable detected. Falling back to secure local file storage.");
+  let uri = (process.env.MONGODB_URI || "").trim();
+  
+  // Clean potential enclosing quotes from env parsers
+  if (uri.startsWith('"') && uri.endsWith('"')) {
+    uri = uri.slice(1, -1).trim();
+  }
+  if (uri.startsWith("'") && uri.endsWith("'")) {
+    uri = uri.slice(1, -1).trim();
+  }
+
+  const isPlaceholder = !uri || 
+                        uri.includes("YOUR_") || 
+                        uri.includes("INSERT_") || 
+                        uri.includes("MY_MONGODB") ||
+                        uri.includes("placeholder") ||
+                        uri === "null" ||
+                        uri === "undefined";
+
+  const isCorrectProtocol = uri.startsWith("mongodb://") || uri.startsWith("mongodb+srv://");
+
+  if (isPlaceholder || !isCorrectProtocol) {
+    console.log("⚠️ No valid/active MONGODB_URI detected or placeholder found. Securing cloud deployment with clean, local sandbox file-based storage.");
+    isMongoConnected = false;
     initLocalDB();
     return;
   }
 
   try {
     mongoose.set("strictQuery", false);
+    console.log("⚙️ Attempting secure connection to MongoDB backend cluster...");
     await mongoose.connect(uri, {
       serverSelectionTimeoutMS: 5000,
     });
@@ -97,7 +118,7 @@ export async function connectDB() {
     await seedDefaultAdmin();
   } catch (error: any) {
     console.error("❌ MongoDB connection error:", error.message);
-    console.log("⚠️ Falling back to clean local file storage due to connection failure.");
+    console.log("⚠️ Falling back to clean, robust local file storage due to connection failure.");
     isMongoConnected = false;
     initLocalDB();
   }
