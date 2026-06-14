@@ -116,12 +116,189 @@ export async function connectDB() {
     isMongoConnected = true;
     console.log("⚡ MongoDB connected successfully.");
     await seedDefaultAdmin();
+    await seedDefaultLeads();
   } catch (error: any) {
     console.error("❌ MongoDB connection error:", error.message);
     console.log("⚠️ Falling back to clean, robust local file storage due to connection failure.");
     isMongoConnected = false;
     initLocalDB();
   }
+}
+
+// -----------------------------------------------------------------------------
+// SEED CLIENT LEADS REGISTRY DATASETS
+// -----------------------------------------------------------------------------
+function getInitialLeads(): ILead[] {
+  return [
+    {
+      id: "lead-1",
+      name: "Sarah Jenkins",
+      email: "sarah.j@techstart.io",
+      phone: "555-0199",
+      company: "TechStart Inc",
+      source: "Website",
+      status: "New",
+      notes: "Filled contact form. Interested in premium enterprise-wide tier.",
+      followUpDate: "2026-06-25",
+      createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+      history: [
+        {
+          id: "h1",
+          note: "Lead created via website contact form integration.",
+          status: "New",
+          followUpDate: "2026-06-25",
+          createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+        }
+      ]
+    },
+    {
+      id: "lead-2",
+      name: "Michael Chen",
+      email: "michael@quantum-labs.com",
+      phone: "555-0248",
+      company: "Quantum Labs",
+      source: "LinkedIn",
+      status: "Contacted",
+      notes: "Reached out via LinkedIn DM. Sent our services deck and initial platform pricing sheet.",
+      followUpDate: "2026-06-23",
+      createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+      history: [
+        {
+          id: "h2",
+          note: "Contacted Michael. Sent pricing matrix. Waiting on feedback from his VP of Engineering.",
+          status: "Contacted",
+          followUpDate: "2026-06-23",
+          createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      ]
+    },
+    {
+      id: "lead-3",
+      name: "Jessica Alva",
+      email: "j.alva@referralhub.net",
+      phone: "555-0371",
+      company: "ReferralHub Ltd",
+      source: "Referral",
+      status: "Follow Up",
+      notes: "Needs minor security integrations. Follow up to resolve technical workflow questions.",
+      followUpDate: "2026-06-28",
+      createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      history: [
+        {
+          id: "h3",
+          note: "Completed initial discovery call. Booked custom tech review with the systems architecture team.",
+          status: "Follow Up",
+          followUpDate: "2026-06-28",
+          createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      ]
+    },
+    {
+      id: "lead-4",
+      name: "Daniel Craig",
+      email: "daniel@royal-ops.uk",
+      phone: "555-0421",
+      company: "Royal Ops Ltd",
+      source: "Instagram",
+      status: "Converted",
+      notes: "Acquired CRM subscription! Closed deal with account representative.",
+      followUpDate: "",
+      createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+      history: [
+        {
+          id: "h4",
+          note: "Verified contract signature. Successfully closed deal and provisioned their active organization workspace.",
+          status: "Converted",
+          followUpDate: "",
+          createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      ]
+    },
+    {
+      id: "lead-5",
+      name: "Amina Diallo",
+      email: "amina@equinox-health.org",
+      phone: "555-0812",
+      company: "Equinox Healthcare",
+      source: "Website",
+      status: "Converted",
+      notes: "Onboarded successfully. Needs custom HIPAA-compliance sign-off documentation.",
+      followUpDate: "",
+      createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+      history: [
+        {
+          id: "h5",
+          note: "Began onboarding flow. Dispatched requested security compliance documents.",
+          status: "Converted",
+          followUpDate: "",
+          createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      ]
+    },
+    {
+      id: "lead-6",
+      name: "Siddharth Mehta",
+      email: "s.mehta@apex-cyber.io",
+      phone: "555-0919",
+      company: "Apex Cybernetics",
+      source: "Website",
+      status: "New",
+      notes: "Requested a live platform demonstration. Interested in pipeline custom tagging features.",
+      followUpDate: "2026-06-21",
+      createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+      history: [
+        {
+          id: "h6",
+          note: "Inbound calendar request received via marketing site api. Automated meeting confirmation sent.",
+          status: "New",
+          followUpDate: "2026-06-21",
+          createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString()
+        }
+      ]
+    },
+    {
+      id: "lead-7",
+      name: "Elena Rostova",
+      email: "e.rostova@nordic-logistics.se",
+      phone: "555-0672",
+      company: "Nordic Logistics",
+      source: "LinkedIn",
+      status: "Contacted",
+      notes: "Connected on LinkedIn. Requesting localization options for European offices.",
+      followUpDate: "2026-06-22",
+      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      history: [
+        {
+          id: "h7",
+          note: "Messaged on LinkedIn. Confirmed translation support and regional datacenter hosting options.",
+          status: "Contacted",
+          followUpDate: "2026-06-22",
+          createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      ]
+    },
+    {
+      id: "lead-8",
+      name: "Marcus Aurelius",
+      email: "marcus@rome-holdings.it",
+      phone: "555-0789",
+      company: "Rome Holdings Corp",
+      source: "Referral",
+      status: "Follow Up",
+      notes: "Direct referral by advisory board member. High-priority interest in multi-user workspace seats.",
+      followUpDate: "2026-06-26",
+      createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+      history: [
+        {
+          id: "h8",
+          note: "Introductory email exchange. Arranged for product validation session with stakeholders.",
+          status: "Follow Up",
+          followUpDate: "2026-06-26",
+          createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      ]
+    }
+  ];
 }
 
 // -----------------------------------------------------------------------------
@@ -148,92 +325,7 @@ function initLocalDB() {
           createdAt: new Date().toISOString()
         }
       ],
-      leads: [
-        {
-          id: "lead-1",
-          name: "Sarah Jenkins",
-          email: "sarah.j@techstart.io",
-          phone: "555-0199",
-          company: "TechStart Inc",
-          source: "Website",
-          status: "New",
-          notes: "Filled contact form. Interested in premium tier.",
-          followUpDate: "2026-06-05",
-          createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-          history: [
-            {
-              id: "h1",
-              note: "Lead created via website contact form integration.",
-              status: "New",
-              followUpDate: "2026-06-05",
-              createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-            }
-          ]
-        },
-        {
-          id: "lead-2",
-          name: "Michael Chen",
-          email: "michael@quantum-labs.com",
-          phone: "555-0248",
-          company: "Quantum Labs",
-          source: "LinkedIn",
-          status: "Contacted",
-          notes: "Reached out via LinkedIn DM. Sent our services deck.",
-          followUpDate: "2026-06-03",
-          createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-          history: [
-            {
-              id: "h2",
-              note: "Contacted Michael. Sent pricing matrix. Waiting on feedback.",
-              status: "Contacted",
-              followUpDate: "2026-06-03",
-              createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
-            }
-          ]
-        },
-        {
-          id: "lead-3",
-          name: "Jessica Alva",
-          email: "j.alva@referralhub.net",
-          phone: "555-0371",
-          company: "ReferralHub Ltd",
-          source: "Referral",
-          status: "Follow Up",
-          notes: "Needs minor security integrations. Follow up to resolve technical questions.",
-          followUpDate: "2026-06-02",
-          createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-          history: [
-            {
-              id: "h3",
-              note: "Completed initial discovery call. Booked custom tech review.",
-              status: "Follow Up",
-              followUpDate: "2026-06-02",
-              createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString()
-            }
-          ]
-        },
-        {
-          id: "lead-4",
-          name: "Daniel Craig",
-          email: "daniel@royal-ops.uk",
-          phone: "555-0421",
-          company: "Royal Ops Ltd",
-          source: "Instagram",
-          status: "Converted",
-          notes: "Acquired CRM subscription! Closed deal with account representative.",
-          followUpDate: "",
-          createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-          history: [
-            {
-              id: "h4",
-              note: "Verified contract signature. Successfully closed deal.",
-              status: "Converted",
-              followUpDate: "",
-              createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString()
-            }
-          ]
-        }
-      ]
+      leads: getInitialLeads()
     };
     fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2), "utf8");
     console.log("📂 Local Database initialized with default records.");
@@ -244,7 +336,14 @@ function readLocalDB(): ILocalDB {
   try {
     initLocalDB();
     const raw = fs.readFileSync(DB_FILE, "utf8");
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw) as ILocalDB;
+    // Auto-restoration safety check: If empty/erased leads array, populate defaults
+    if (!parsed.leads || parsed.leads.length === 0) {
+      parsed.leads = getInitialLeads();
+      writeLocalDB(parsed);
+      console.log("📂 Local Database leads list was empty. Repopulated seed client list.");
+    }
+    return parsed;
   } catch (e) {
     console.error("Local database read error:", e);
     return { users: [], leads: [] };
@@ -273,6 +372,37 @@ async function seedDefaultAdmin() {
         passwordHash: passHash,
       });
       console.log(`👤 MongoDB Admin seeded successfully: ${adminEmail}`);
+    }
+  }
+}
+
+async function seedDefaultLeads() {
+  if (isMongoConnected) {
+    try {
+      const existingCount = await MongoLead.countDocuments();
+      if (existingCount === 0) {
+        const list = getInitialLeads().map(l => ({
+          name: l.name,
+          email: l.email,
+          phone: l.phone,
+          company: l.company,
+          source: l.source,
+          status: l.status,
+          notes: l.notes,
+          followUpDate: l.followUpDate,
+          createdAt: new Date(l.createdAt),
+          history: l.history.map(h => ({
+            note: h.note,
+            status: h.status,
+            followUpDate: h.followUpDate,
+            createdAt: new Date(h.createdAt)
+          }))
+        }));
+        await MongoLead.insertMany(list);
+        console.log("📂 MongoDB successfully seeded with comprehensive default leads list.");
+      }
+    } catch (e: any) {
+      console.error("Error seeding default leads in MongoDB:", e.message);
     }
   }
 }
